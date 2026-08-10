@@ -1,3 +1,8 @@
+mod ui;
+
+
+use crate::ui::rect::Rect;
+
 use winit::{
     application::ApplicationHandler,
     event::WindowEvent,
@@ -10,6 +15,7 @@ use winit::{
         WindowId,
     },
 };
+
 
 struct App {
     window: Option<Window>,
@@ -91,8 +97,11 @@ impl ApplicationHandler for App {
 }
 
 fn main() {
+
+    let r = Rect { x: 10.0, y: 20.0 };
+
     println!(
-        "Starting Mini Engine v0.1..."
+        "Starting Mini Engine v0.1... {}", r.x 
     );
 
     let event_loop =
