@@ -40,8 +40,8 @@ impl ApplicationHandler for App {
                     )
                     .with_inner_size(
                         winit::dpi::PhysicalSize::new(
-                            800,
-                            600,
+                            1200,
+                            700,
                         )
                     ),
             )
@@ -75,6 +75,14 @@ impl ApplicationHandler for App {
                 );
 
                 event_loop.exit();
+            }
+
+               WindowEvent::Resized(size) => {
+                println!(
+                    "Window resized: {} x {}",
+                    size.width,
+                    size.height
+                );
             }
 
             _ => {}
