@@ -4,7 +4,4 @@ pub struct Rect {
     pub width: f32,
     pub height: f32,
     pub color: [f32; 4],
-
 }
-
-

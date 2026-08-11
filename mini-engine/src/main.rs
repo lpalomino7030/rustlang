@@ -1,61 +1,56 @@
-mod ui;
 mod renderer;
+mod ui;
 
-use crate::renderer::renderer::Renderer;
-use crate::ui::rect::Rect;
+use std::sync::Arc;
+
+use crate::renderer::Renderer;
 
 use winit::{
     application::ApplicationHandler,
     event::WindowEvent,
-    event_loop::{
-        ActiveEventLoop,
-        EventLoop,
-    },
-    window::{
-        Window,
-        WindowId,
-    },
+    event_loop::{ActiveEventLoop, EventLoop},
+    window::{Window, WindowId},
 };
 
-
 struct App {
-    window: Option<Window>,
+    window: Option<Arc<Window>>,
+    renderer: Option<Renderer>,
 }
 
 impl App {
     fn new() -> Self {
         Self {
             window: None,
+            renderer: None,
         }
     }
 }
 
 impl ApplicationHandler for App {
-    fn resumed(
-        &mut self,
-        event_loop: &ActiveEventLoop,
-    ) {
+    fn resumed(&mut self, event_loop: &ActiveEventLoop) {
         if self.window.is_some() {
             return;
         }
 
-        let window = event_loop
-            .create_window(
-                Window::default_attributes()
-                    .with_title(
-                        "Mini Engine v0.1"
-                    )
-                    .with_inner_size(
-                        winit::dpi::PhysicalSize::new(
-                            1200,
-                            700,
-                        )
-                    ),
-            )
-            .expect(
-                "Failed to create window"
-            );
+        let window_width = 1200;
+        let window_height = 700;
 
+        let window = Arc::new(
+            event_loop
+                .create_window(
+                    Window::default_attributes()
+                        .with_title("Mini Engine v0.1")
+                        .with_inner_size(winit::dpi::PhysicalSize::new(
+                            window_width,
+                            window_height,
+                        )),
+                )
+                .expect("Failed to create window"),
+        );
+
+        let renderer = pollster::block_on(Renderer::new(&window));
+
+        self.renderer = Some(renderer);
         self.window = Some(window);
     }
 
@@ -65,9 +60,7 @@ impl ApplicationHandler for App {
         window_id: WindowId,
         event: WindowEvent,
     ) {
-        let Some(window) =
-            self.window.as_ref()
-        else {
+        let Some(window) = self.window.as_ref() else {
             return;
         };
 
@@ -77,19 +70,12 @@ impl ApplicationHandler for App {
 
         match event {
             WindowEvent::CloseRequested => {
-                println!(
-                    "Closing engine..."
-                );
-
+                println!("Closing engine...");
                 event_loop.exit();
             }
 
-               WindowEvent::Resized(size) => {
-                println!(
-                    "Window resized: {} x {}",
-                    size.width,
-                    size.height
-                );
+            WindowEvent::Resized(size) => {
+                println!("Window resized: {} x {}", size.width, size.height);
             }
 
             _ => {}
@@ -98,36 +84,11 @@ impl ApplicationHandler for App {
 }
 
 fn main() {
+    println!("Starting Mini Engine v0.1...");
 
-   
-
-    println!(
-        "Starting Mini Engine v0.1..."
-    );
-
-    let renderer = Renderer::new();
-
-let r = Rect {
-    x: 10.0,
-    y: 20.0,
-    width: 200.0,
-    height: 50.0,
-    color: [1.0, 0.0, 0.0, 1.0],
-};
-
-renderer.render_rect(&r);
-
-    let event_loop =
-        EventLoop::new()
-            .expect(
-                "Failed to create event loop"
-            );
+    let event_loop = EventLoop::new().expect("Failed to create event loop");
 
     let mut app = App::new();
 
-    event_loop
-        .run_app(&mut app)
-        .expect(
-            "Application failed"
-        );
+    event_loop.run_app(&mut app).expect("Application failed");
 }

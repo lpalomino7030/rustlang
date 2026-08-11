@@ -1,4 +1,5 @@
 pub struct Line {
-    pub start: Point,
-    pub end: Point,
+    pub start: [f32; 2],
+    pub end: [f32; 2],
+    pub color: [f32; 4],
 }
