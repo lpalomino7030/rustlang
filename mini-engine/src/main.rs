@@ -1,6 +1,7 @@
 mod ui;
+mod renderer;
 
-
+use crate::renderer::renderer::Renderer;
 use crate::ui::rect::Rect;
 
 use winit::{
@@ -98,11 +99,23 @@ impl ApplicationHandler for App {
 
 fn main() {
 
-    let r = Rect { x: 10.0, y: 20.0 };
+   
 
     println!(
-        "Starting Mini Engine v0.1... {}", r.x 
+        "Starting Mini Engine v0.1..."
     );
+
+    let renderer = Renderer::new();
+
+let r = Rect {
+    x: 10.0,
+    y: 20.0,
+    width: 200.0,
+    height: 50.0,
+    color: [1.0, 0.0, 0.0, 1.0],
+};
+
+renderer.render_rect(&r);
 
     let event_loop =
         EventLoop::new()
