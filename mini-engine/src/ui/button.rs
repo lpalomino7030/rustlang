@@ -1,11 +1,11 @@
-struct Button {
+pub struct Button {
     text: String,
     width: f32,
     height: f32,
 }
 
 impl Button {
-    fn new(text: &str) -> Self {
+    pub fn new(text: &str) -> Self {
         Self {
             text: text.to_string(),
             width: 120.0,

@@ -1,4 +1,4 @@
-struct Label {
+pub struct Label {
     text: String,
     x_axis: f32,
     y_axis: f32,

@@ -1,22 +1,21 @@
 use std::sync::Arc;
 
-use mini_engine::renderer::Renderer;
-use mini_engine::ui::Line;
+use crate::renderer::Renderer;
 
 use winit::{
     application::ApplicationHandler,
     event::WindowEvent,
-    event_loop::{ActiveEventLoop, EventLoop},
+    event_loop::ActiveEventLoop,
     window::{Window, WindowId},
 };
 
-struct App {
+pub struct MinniUi {
     window: Option<Arc<Window>>,
     renderer: Option<Renderer>,
 }
 
-impl App {
-    fn new() -> Self {
+impl MinniUi {
+    pub fn new() -> Self {
         Self {
             window: None,
             renderer: None,
@@ -24,7 +23,7 @@ impl App {
     }
 }
 
-impl ApplicationHandler for App {
+impl ApplicationHandler for MinniUi {
     fn resumed(&mut self, event_loop: &ActiveEventLoop) {
         if self.window.is_some() {
             return;
@@ -32,25 +31,11 @@ impl ApplicationHandler for App {
 
         let window = Arc::new(
             event_loop
-                .create_window(
-                    Window::default_attributes()
-                        .with_title("Rust UI")
-                        .with_inner_size(winit::dpi::PhysicalSize::new(1200, 700)),
-                )
+                .create_window(Window::default_attributes().with_title("Rust UI"))
                 .expect("Failed to create window"),
         );
 
         let renderer = pollster::block_on(Renderer::new(window.clone()));
-
-        let line = Line {
-            start: [50.0, 600.0],
-            end: [1100.0, 100.0],
-            color: [0.0, 1.0, 0.0, 1.0],
-        };
-
-        renderer.render_line(&line);
-
-        window.request_redraw();
 
         self.renderer = Some(renderer);
         self.window = Some(window);
@@ -72,12 +57,7 @@ impl ApplicationHandler for App {
 
         match event {
             WindowEvent::CloseRequested => {
-                println!("Closing engine...");
                 event_loop.exit();
-            }
-
-            WindowEvent::Resized(size) => {
-                println!("Window resized: {} x {}", size.width, size.height);
             }
 
             WindowEvent::RedrawRequested => {
@@ -89,14 +69,4 @@ impl ApplicationHandler for App {
             _ => {}
         }
     }
-}
-
-fn main() {
-    println!("Starting Mini Engine v0.1...");
-
-    let event_loop = EventLoop::new().expect("Failed to create event loop");
-
-    let mut app = App::new();
-
-    event_loop.run_app(&mut app).expect("Application failed");
 }
