@@ -1,4 +1,4 @@
-use super::UiElement;
+use super::{Bounds, UiElement};
 
 pub struct Rect {
     pub x: f32,
@@ -8,6 +8,13 @@ pub struct Rect {
     pub color: [f32; 4],
 }
 
-impl UIElement for Rect {
-    
+impl UiElement for Rect {
+    fn bounds(&self) -> Bounds {
+        Bounds {
+            x: self.x,
+            y: self.y,
+            width: self.width,
+            height: self.height,
+        }
+    }
 }

@@ -1,7 +1,11 @@
 use std::sync::Arc;
 
 use mini_engine::renderer::Renderer;
-use mini_engine::ui::Line;
+use mini_engine::ui::{
+    Line,
+    Rect,
+    UiElement,
+};
 
 use winit::{
     application::ApplicationHandler,
@@ -89,14 +93,55 @@ impl ApplicationHandler for App {
             _ => {}
         }
     }
+
+    
+}
+
+fn test_elements() {
+    let line = Line {
+        start: [100.0, 100.0],
+        end: [500.0, 300.0],
+        color: [1.0, 0.0, 0.0, 1.0],
+    };
+
+    let rect = Rect {
+        x: 200.0,
+        y: 200.0,
+        width: 300.0,
+        height: 100.0,
+        color: [0.0, 1.0, 0.0, 1.0],
+    };
+
+    let elements: Vec<Box<dyn UiElement>> = vec![
+        Box::new(line),
+        Box::new(rect),
+    ];
+
+    for element in &elements {
+        let bounds = element.bounds();
+
+        println!(
+            "Element bounds: x={}, y={}, width={}, height={}",
+            bounds.x,
+            bounds.y,
+            bounds.width,
+            bounds.height,
+        );
+    }
 }
 
 fn main() {
     println!("Starting Mini Engine v0.1...");
 
-    let event_loop = EventLoop::new().expect("Failed to create event loop");
+    test_elements();
+
+    let event_loop =
+        EventLoop::new()
+            .expect("Failed to create event loop");
 
     let mut app = App::new();
 
-    event_loop.run_app(&mut app).expect("Application failed");
+    event_loop
+        .run_app(&mut app)
+        .expect("Application failed");
 }
