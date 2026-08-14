@@ -17,6 +17,7 @@ use winit::{
 struct App {
     window: Option<Arc<Window>>,
     renderer: Option<Renderer>,
+    line: Option<Line>,
 }
 
 impl App {
@@ -24,6 +25,7 @@ impl App {
         Self {
             window: None,
             renderer: None,
+            line: None,
         }
     }
 }
@@ -46,7 +48,7 @@ impl ApplicationHandler for App {
 
         let renderer = pollster::block_on(Renderer::new(window.clone()));
 
-        let line = Line {
+        let mut line = Line {
             start: [50.0, 600.0],
             end: [1100.0, 100.0],
             color: [0.0, 1.0, 0.0, 1.0],
@@ -97,49 +99,50 @@ impl ApplicationHandler for App {
     
 }
 
-fn test_elements() {
-    let line = Line {
-        start: [100.0, 100.0],
-        end: [500.0, 300.0],
-        color: [1.0, 0.0, 0.0, 1.0],
-    };
+// fn test_elements() {
+//     let line = Line {
+//         start: [100.0, 100.0],
+//         end: [500.0, 300.0],
+//         color: [1.0, 0.0, 0.0, 1.0],
+//     };
 
-    let rect = Rect {
-        x: 200.0,
-        y: 200.0,
-        width: 300.0,
-        height: 100.0,
-        color: [0.0, 1.0, 0.0, 1.0],
-    };
+//     let rect = Rect {
+//         x: 200.0,
+//         y: 200.0,
+//         width: 300.0,
+//         height: 100.0,
+//         color: [0.0, 1.0, 0.0, 1.0],
+//     };
 
-    let elements: Vec<Box<dyn UiElement>> = vec![
-        Box::new(line),
-        Box::new(rect),
-    ];
+//     let elements: Vec<Box<dyn UiElement>> = vec![
+//         Box::new(line),
+//         Box::new(rect),
+//     ];
 
-    for element in &elements {
-        let bounds = element.bounds();
+//     for element in &elements {
+//         let bounds = element.bounds();
 
-        println!(
-            "Element bounds: x={}, y={}, width={}, height={}",
-            bounds.x,
-            bounds.y,
-            bounds.width,
-            bounds.height,
-        );
-    }
-}
+//         println!(
+//             "Element bounds: x={}, y={}, width={}, height={}",
+//             bounds.x,
+//             bounds.y,
+//             bounds.width,
+//             bounds.height,
+//         );
+//     }
+// }
 
 fn main() {
     println!("Starting Mini Engine v0.1...");
-
-    test_elements();
 
     let event_loop =
         EventLoop::new()
             .expect("Failed to create event loop");
 
     let mut app = App::new();
+
+    // test_elements();
+    // println!("Tested UI elements successfully.");
 
     event_loop
         .run_app(&mut app)
